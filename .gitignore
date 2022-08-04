@@ -1,1 +1,6 @@
-file
+.gitignore
+.idea/
+.vscode/
+out/
+target/
+src/test/
