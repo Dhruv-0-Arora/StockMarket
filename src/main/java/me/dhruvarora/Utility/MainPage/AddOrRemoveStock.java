@@ -17,6 +17,11 @@ import org.json.simple.parser.ParseException;
 
 import me.dhruvarora.UI.Frame;
 
+/*
+ * AddOrRemoveStock class is a JButton which is displayed at the bottom of the MainPage
+ * 
+ * overrides default paint functions for JButton and makes rounded corners
+ */
 public class AddOrRemoveStock extends JButton {
     private final Color textColor = Color.white;
     private final Color backgroundColor = new Color(67, 129, 255);
@@ -24,9 +29,15 @@ public class AddOrRemoveStock extends JButton {
     private final Frame frame;
     private Shape shape;
 
+    /*
+     * CONSTRUCTOR
+     * 
+     * takes instance of frame
+     */
     public AddOrRemoveStock(Frame frame) {
-        this.frame = frame;
+        this.frame = frame; // setting global frame variable
 
+        // setting defaults
         setVerticalTextPosition(AbstractButton.CENTER);
         setHorizontalTextPosition(AbstractButton.CENTER);
         setText("Add/Remove Stock");
@@ -36,20 +47,29 @@ public class AddOrRemoveStock extends JButton {
         setPreferredSize(new Dimension(150, 75));
         setFont(new Font("Arial", Font.PLAIN, 20));
         setAlignmentX(CENTER_ALIGNMENT);
+
+        // allowing button to have rounded corners
         setFocusPainted(false);
         setBorderPainted(false);
 
+        // listener for when the button is pressed
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    AddOrRemoveStock.this.frame.swapScreens();
+                    AddOrRemoveStock.this.frame.swapScreens(); // will swap to change stocks page
                 } catch (IOException | ParseException e1) {
                     e1.printStackTrace();
                 }
             }
         });
     }
+
+    /*
+     * 
+     * 
+     * overriden function to round the corners of the button
+     */
 
     protected void paintComponent(Graphics g) {
         g.setColor(getBackground());

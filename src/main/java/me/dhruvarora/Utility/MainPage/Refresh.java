@@ -17,16 +17,22 @@ import org.json.simple.parser.ParseException;
 
 import me.dhruvarora.UI.Frame;
 
+/*
+ * Refresh class is a JButton which is displayed at the bottom of the MainPage
+ * 
+ * overrides default paint functions for JButton and makes rounded corners
+ */
 public class Refresh extends JButton {
     private final Color textColor = Color.white;
-    private final Color backgroundColor = new Color(67, 129, 255);
+    private final Color backgroundColor = new Color(67, 129, 255); // background color is BLUE
     private final Color borderColor = Color.BLACK;
-    private final Frame frame;
-    private Shape shape;
+    private final Frame frame; // instance of the current frame
+    private Shape shape; // shape of the rounded bordered button
 
     public Refresh(Frame frame) {
         this.frame = frame;
 
+        // setting all the defaults
         setVerticalTextPosition(AbstractButton.CENTER);
         setHorizontalTextPosition(AbstractButton.CENTER);
         setText("Refresh");
@@ -36,20 +42,29 @@ public class Refresh extends JButton {
         setPreferredSize(new Dimension(150, 75));
         setFont(new Font("Arial", Font.PLAIN, 20));
         setAlignmentX(CENTER_ALIGNMENT);
+
+        // allows the button to have rounded corners
         setFocusPainted(false);
         setBorderPainted(false);
 
+        // button pressed listener
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Refresh.this.frame.refresh();
+                    Refresh.this.frame.refresh(); // calling the refresh method in Frame.java
                 } catch (IOException | ParseException e1) {
                     e1.printStackTrace();
                 }
             }
         });
     }
+
+    /*
+     * 
+     * 
+     * overriden functions used to make the corners round
+     */
 
     protected void paintComponent(Graphics g) {
         g.setColor(getBackground());

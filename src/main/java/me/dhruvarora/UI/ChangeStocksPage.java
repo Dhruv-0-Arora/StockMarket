@@ -20,18 +20,14 @@ import me.dhruvarora.Utility.ChangeStockPage.ChangeStockButton;
 import me.dhruvarora.Utility.ChangeStockPage.InputField;
 
 public class ChangeStocksPage extends JPanel {
-    // stores the frame content
-    private final JComponent content;
-    // stores the frame instance
-    private final Frame frame;
-    // stores global variable for cluster component constraints
+    /* Global variables */
+    private final JComponent content; // stores the frame content
+    private final Frame frame; // stores the frame instance
     private GridBagConstraints constraints;
-    // stores instance of invisible red text reading "Invalid Ticker Symbol!"
-    private final JLabel invalidFieldInput;
-    // stores instance of input field
-    private final InputField InputField = new InputField();
-    // stores instance of button to submit field
-    private final ChangeStockButton changeStockButton;
+
+    private final JLabel invalidFieldInput; // stores instance of invisible red text reading "Invalid Ticker Symbol!"
+    private final InputField InputField = new InputField(); // stores instance of input field
+    private final ChangeStockButton changeStockButton; // stores instance of submit field button
     private final StockData stockData;
 
     /*
@@ -94,21 +90,19 @@ public class ChangeStocksPage extends JPanel {
                 (frame.getHeight() / 2) - (cluster.getHeight() / 2));
         this.add(cluster);
 
-        /*
-         * creates button to navigate back to mainPage
-         * 
-         * end of cluster (back button is added straight to extended JPanel)
-         */
+        /* end of cluster */
+
+        // creates button to navigate back to mainPage
         this.add(new BackButton(frame));
 
         // creates invisible text for invalid input
         invalidFieldInput = invalidInput();
-        // setting location below cluster
+        // setting location of text below cluster
         invalidFieldInput.setLocation(
                 (int) Math.round(cluster.getLocation().getX()
                         + ((cluster.getSize().width / 2) - invalidFieldInput.getSize().getWidth() / 2)),
                 (int) cluster.getLocation().getY() + cluster.getSize().height + 20);
-        this.add(invalidFieldInput);
+        this.add(invalidFieldInput); // adding it to JPanel
 
     }
 
@@ -171,6 +165,7 @@ public class ChangeStocksPage extends JPanel {
 
     /*
      * Function to make invalidInput visible
+     * used in ChangeStockButton class
      */
     public void inputIsInvalid() {
         invalidFieldInput.setVisible(true);

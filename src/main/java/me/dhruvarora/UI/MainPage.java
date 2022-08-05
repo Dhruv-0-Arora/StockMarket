@@ -22,6 +22,12 @@ import me.dhruvarora.Utility.MainPage.Refresh;
 import me.dhruvarora.Utility.MainPage.AddOrRemoveStock;
 import yahoofinance.Stock;
 
+/*
+ * MainPage is the first page displayed when project is launched
+ * 
+ * extention of JPanel and is converted into a JScrollPane
+ * format: scroll pane with graphs at top and buttons underneath
+ */
 public class MainPage extends JPanel {
     // stores the frame content
     private JComponent content;
@@ -35,6 +41,8 @@ public class MainPage extends JPanel {
     // stores refresh button instance for initializing and making default button
     private Refresh refresh;
     private StockData stockData;
+    // number of months that the app will predict
+    private final int predictionsCount = 2;
 
     /*
      * CONSTRUCTOR
@@ -92,9 +100,10 @@ public class MainPage extends JPanel {
         /*
          * interates through StockMarket.json
          * 
-         * creates graphs for each stock in json file
+         * creates graphs and their titles for each stock in json file
          */
         for (int i = 0; i < stockData.getWatchListLength(); i++) {
+
             /*
              * using YahooFinanceAPI to get the stock current price
              * after getting current price, creates a title for the graph including the
@@ -160,7 +169,9 @@ public class MainPage extends JPanel {
     private Graph createGraph(StockData stockData, String ticker)
             throws IOException, ParseException {
         ArrayList<Double> dataSet = stockData.getGraphData(ticker);
-        Graph newGraphPanel = new Graph(dataSet);
+        // TODO: fully implement prediction data
+        // dataSet = stockData.addPredictionData(dataSet, predictionsCount, ticker);
+        Graph newGraphPanel = new Graph(dataSet, predictionsCount);
         return newGraphPanel;
     }
 

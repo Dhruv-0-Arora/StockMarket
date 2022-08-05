@@ -25,6 +25,8 @@ public class Frame extends JFrame {
      * stocks that they would like to watch in form of a graph.
      */
     private ChangeStocksPage changeStocksPage;
+    // instance of StockData class (this instance is avalible throughout the entire
+    // project)
     private StockData stockData;
 
     /*
@@ -57,7 +59,7 @@ public class Frame extends JFrame {
         content.setBackground(Color.darkGray);
 
         /*
-         * initializing mainJPanel
+         * initializing mainJPanel & global stockData instance
          */
         this.stockData = new StockData();
         mainPage = new MainPage(content, this, this.stockData);
@@ -67,7 +69,7 @@ public class Frame extends JFrame {
         setVisible(true);
 
         /*
-         * listens if the window is resized
+         * window RESIZING event
          * 
          * if run, then will delete and recreate open JPanel
          */
@@ -92,6 +94,7 @@ public class Frame extends JFrame {
      * function to set the desktop getImage
      * 
      * works for macOS, windows, and linux
+     * TODO: have it work for jar files
      */
     private void setIcons(String path) {
         // windows & linux

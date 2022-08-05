@@ -53,9 +53,6 @@ public class StockData {
         JSONParser jsonParser = new JSONParser();
         stockWatchList = (JSONArray) jsonParser.parse(
                 new InputStreamReader(fis, "UTF-8"));
-        System.out.println(stockWatchList);
-        // stockWatchList = (JSONArray) new JSONParser()
-        // .parse(new FileReader("src/main/resources/me/dhruvarora/StockMarkets.json"));
     }
 
     /*
@@ -312,25 +309,127 @@ public class StockData {
          * is put into this ArrayList
          * - all prices are arranged in order from oldest to current
          */
-        int count = 0;
         ArrayList<Double> filteredData = new ArrayList<>();
 
-        for (Long enochDate : timeStamps) {
+        for (Long enochDate : timeStamps) { // iterating through each time in timeStamps
+            // getting the date from timeStamps
             Date date2 = new Date(enochDate * 1000);
             String[] formattedDateString = format.format(date2).split(" ");
             int[] formatDate = { Integer.parseInt(formattedDateString[0]), Integer.parseInt(formattedDateString[1]) };
 
+            // if the date matches to the target date
             if (formatDate[0] == targetDate[0] && formatDate[1] == targetDate[1]) {
-                count = count + 1;
-                filteredData.add(data.get(timeStamps.indexOf(enochDate)));
+                filteredData.add(data.get(timeStamps.indexOf(enochDate))); // add the price to filtered data
 
-                targetDate[1] = targetDate[1] + 1;
-                if (targetDate[1] == 13) {
-                    targetDate[0] = targetDate[0] + 1;
-                    targetDate[1] = 1;
+                targetDate[1] = targetDate[1] + 1; // change the target date to a month ahead
+                if (targetDate[1] == 13) { // if the months becomes 13
+                    targetDate[0] = targetDate[0] + 1; // add a year
+                    targetDate[1] = 1; // and set the month to jan
                 }
             }
         }
-        return filteredData;
+        return filteredData; // returned the collected data
+    }
+
+    /*
+     * function to add predicted data to the dataSet
+     * 
+     * returns the new dataSet
+     * 
+     * TODO: work in progress (dead code)
+     */
+    @SuppressWarnings("unchecked")
+    public ArrayList<Double> addPredictionData(ArrayList<Double> dataSet, int predictionCount, String ticker)
+            throws IOException, ParseException {
+
+        // getting the data and timestamps from the JSON object
+        JSONObject rawData = (JSONObject) this.getHistoricalData(ticker);
+        JSONObject indicators = (JSONObject) rawData.get("indicators");
+        JSONArray quote = (JSONArray) indicators.get("quote");
+        JSONObject obj = (JSONObject) quote.get(0);
+
+        ArrayList<Double> data = (ArrayList<Double>) obj.get("open");
+        ArrayList<Long> timeStamps = (ArrayList<Long>) rawData.get("timestamp");
+
+        // if the graph is going downwards
+        if (isDownwardTrend(data, timeStamps)) {
+            addDownwardTrendData(data, timeStamps); // add another prediction of downwards
+        }
+        // TODO: create new checks for predictions
+
+        return dataSet; // return the new dataset
+
+    }
+
+    /*
+     * function to check if the stock's price is on a decline
+     *
+     * returns true if it is on a decline
+     * return false if it is not on a decline
+     */
+    private boolean isDownwardTrend(ArrayList<Double> data, ArrayList<Long> timeStamps) {
+        // setting format
+        DateFormat format = new SimpleDateFormat("yyyy MM");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+
+        // getting the date 6 months ago
+        Date targetDate = new Date(((System.currentTimeMillis() / 1000) - (2628288 * 2)) * 1000);
+        String[] targetDateString = format.format(targetDate).split(" ");
+        int[] targetDateList = { Integer.parseInt(targetDateString[0]), Integer.parseInt(targetDateString[1]) };
+        System.out.println(targetDateString[0] + " " + targetDateList[1]);
+
+        for (Long time : timeStamps) { // iterates through all the timeStamps
+            // getting the human format of the timeStamp
+            Date date = new Date(time * 1000);
+            String[] dateString = format.format(date).split(" ");
+            int[] dateList = { Integer.parseInt(dateString[0]), Integer.parseInt(dateString[1]) };
+
+            // if the date matches
+            if (dateList[0] == targetDateList[0] && dateList[1] == targetDateList[1]) {
+                // if the month previous price was higher than this months
+                if (data.get(timeStamps.indexOf(time)) > data.get(timeStamps.indexOf(time) + 1)) {
+                    return true; // return that the trend is a decline
+                } else {
+                    return false; // otherwise the trend is not a decline
+                }
+            }
+        }
+        return false; // if the timestamp was not in that list (shouldn't hit this at any point)
+    }
+
+    /*
+     * function to return the data for a downwards trend
+     * - almost a REPEAT of the isDownwardTrend() function
+     * 
+     * calculates how steep the trend is and what the price may look like for the
+     * next month
+     */
+    private Double addDownwardTrendData(ArrayList<Double> data, ArrayList<Long> timeStamps) {
+        // setting human formatting
+        DateFormat format = new SimpleDateFormat("yyyy MM");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+
+        // setting the date the function is trying to find as 6 months previous
+        Date targetDate = new Date(((System.currentTimeMillis() / 1000) - (2628288 * 6)) * 1000);
+        String[] targetDateString = format.format(targetDate).split(" ");
+        int[] targetDateList = { Integer.parseInt(targetDateString[0]), Integer.parseInt(targetDateString[1]) };
+
+        // iterating through all the timeStamps
+        for (Long time : timeStamps) {
+            // getting the human formatting of the timeStamp
+            Date date = new Date(time * 1000);
+            String[] dateString = format.format(date).split(" ");
+            int[] dateList = { Integer.parseInt(dateString[0]), Integer.parseInt(dateString[1]) };
+
+            // TODO: finish all the checks
+            if (dateList[0] == targetDateList[0] && dateList[1] == targetDateList[1]) {
+                Double amount = 0.0;
+                if (data.get(timeStamps.indexOf(time) + 6) > data.get(timeStamps.indexOf(time) + 7)) {
+                    amount = (data.get(timeStamps.indexOf(time) + 6) - data.get(timeStamps.indexOf(time) + 7)) / 2;
+                }
+                return amount;
+            }
+        }
+        return null;
     }
 }
