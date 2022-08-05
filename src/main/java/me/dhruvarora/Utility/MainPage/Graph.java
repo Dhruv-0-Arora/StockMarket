@@ -79,6 +79,7 @@ public class Graph extends JPanel {
         this.drawGraphData(g2, xScale);
 
         // drawing x and y axis lines
+        g2.setColor(Color.WHITE);
         g2.drawLine(X_BORDER_GAP, getHeight() - Y_BORDER_GAP, X_BORDER_GAP, Y_BORDER_GAP);
         g2.drawLine(X_BORDER_GAP, getHeight() - Y_BORDER_GAP, getWidth() - Y_BORDER_GAP, getHeight() - Y_BORDER_GAP);
 
